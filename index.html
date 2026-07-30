@@ -50,9 +50,15 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding: 18px 6vw;
-    background: linear-gradient(180deg, rgba(11,18,32,0.9), rgba(11,18,32,0));
+    padding: 16px 6vw;
+    background: rgba(11,18,32,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
     pointer-events:none;
+  }
+  @media (max-height: 480px) and (orientation: landscape){
+    nav{ padding: 10px 5vw; }
   }
   nav .logo{
     font-size: 1.15rem;
@@ -158,6 +164,16 @@
   @keyframes bob{
     0%,100%{ transform: translateY(0) rotate(45deg); }
     50%{ transform: translateY(8px) rotate(45deg); }
+  }
+
+  /* short/landscape viewports: hero content + the absolutely-positioned scroll cue
+     were both fighting for the same vertical space and overlapping */
+  @media (max-height: 500px){
+    .hero{ padding-top: 70px; padding-bottom: 64px; }
+    .hero-badge{ margin-bottom: 12px; }
+    .hero h1{ font-size: clamp(1.5rem, 6vw, 2.6rem); }
+    .hero p.tagline{ margin-top: 12px; font-size: 0.85rem; }
+    .hero .scroll-cue{ display:none; }
   }
 
   /* ---------- RIDE TRACK (smooth, scroll-driven 2D animation) ---------- */
