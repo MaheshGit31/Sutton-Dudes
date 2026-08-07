@@ -4,42 +4,109 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Sutton Dudes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Caveat:wght@600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-dark:#0b1220;
-    --bg-dark2:#0f1a2e;
-    --volt:#c6ff33;
-    --cyan:#2fe6ff;
-    --orange:#ff7a45;
-    --pink:#ff5da2;
-    --road:#2b2f36;
-    --road-line:#ffd166;
-    --ink:#0b1220;
-    --paper:#f6f4ee;
-    --card:#ffffff;
+    /* ---- Typography system ---- */
+    --font-display: 'Baloo 2', 'Segoe UI', system-ui, sans-serif;
+    --font-hand: 'Caveat', cursive;
+    --font-body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+
+    /* ---- Scrapbook palette ---- */
+    --ink:#3b2f22;
+    --ink-soft:#6b5c48;
+    --kraft:#f4ead4;
+    --paper-cream:#faf3e4;
+    --paper-mint:#edf3e2;
+    --paper-sky:#e6f2f4;
+    --paper-peach:#fdeadb;
+    --cork:#3a2c22;
+    --coral:#ff6f5e;
+    --coral-deep:#e4543f;
+    --mustard:#f2a63d;
+    --sage:#7fa65a;
+    --sky:#4fb3c4;
+    --plum:#b06a8f;
+    --tape: rgba(242,166,61,0.55);
+    --card:#fffdf8;
   }
-
   *{ box-sizing: border-box; margin:0; padding:0; }
-
   html{ scroll-behavior: smooth; }
-
   body{
-    font-family: 'Segoe UI', system-ui, -apple-system, 'Trebuchet MS', sans-serif;
-    background: var(--paper);
+    font-family: var(--font-body);
+    background: var(--paper-cream);
     color: var(--ink);
     overflow-x: hidden;
+    font-size: 16px;
+    line-height: 1.6;
+    background-image:
+      radial-gradient(rgba(59,47,34,0.035) 1px, transparent 1px);
+    background-size: 14px 14px;
   }
-
   a { color: inherit; }
-
   h1,h2,h3{
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  img, svg{ display:block; }
+
+  /* ---------- reveal-on-scroll (lightweight, replaces old scroll-linked ride) ---------- */
+  .reveal{
+    opacity:0;
+    transform: translateY(22px);
+    transition: opacity .7s cubic-bezier(.22,.85,.36,1), transform .7s cubic-bezier(.22,.85,.36,1);
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform: translateY(0);
+  }
+  .reveal-item{
+    opacity:0;
+    transform: translateY(30px) scale(.94);
+    transition: opacity .6s cubic-bezier(.22,.9,.32,1.15), transform .6s cubic-bezier(.22,.9,.32,1.15);
+  }
+  .reveal-item.is-visible{
+    opacity:1;
+    transform: translateY(0) scale(1);
   }
 
-  .glow-text{
-    color: #fff;
-    text-shadow: 0 0 12px rgba(47,230,255,0.6), 0 0 30px rgba(198,255,51,0.25);
+  /* ---------- shared motion keyframes ---------- */
+  @keyframes fadeUp{
+    from{ opacity:0; transform: translateY(26px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @keyframes swayBadge{
+    0%,100%{ transform: rotate(-3deg); }
+    50%{ transform: rotate(1deg); }
+  }
+  @keyframes drift{
+    0%,100%{ background-position: 0 0, 0 0, 0 0; }
+    50%{ background-position: 18px -12px, -14px 16px, 10px 10px; }
+  }
+  @keyframes drawLine{
+    to{ stroke-dashoffset: 0; }
+  }
+  @keyframes floatA{
+    0%,100%{ transform: rotate(-7deg) translateY(0); }
+    50%{ transform: rotate(-7deg) translateY(-10px); }
+  }
+  @keyframes floatB{
+    0%,100%{ transform: rotate(4deg) translateY(0); }
+    50%{ transform: rotate(4deg) translateY(-8px); }
+  }
+  @keyframes floatC{
+    0%,100%{ transform: rotate(-3deg) translateY(0); }
+    50%{ transform: rotate(-3deg) translateY(-12px); }
+  }
+  @keyframes floatD{
+    0%,100%{ transform: rotate(6deg) translateY(0); }
+    50%{ transform: rotate(6deg) translateY(-7px); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   }
 
   /* ---------- NAV ---------- */
@@ -51,37 +118,68 @@
     align-items:center;
     justify-content:space-between;
     padding: 16px 6vw;
-    background: rgba(11,18,32,0.92);
+    background: rgba(250,243,228,0.92);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
-    pointer-events:none;
+    border-bottom: 2px dashed rgba(59,47,34,0.18);
+    transition: box-shadow .3s ease;
   }
-  @media (max-height: 480px) and (orientation: landscape){
-    nav{ padding: 10px 5vw; }
-  }
+  nav.scrolled{ box-shadow: 0 6px 18px rgba(59,47,34,0.10); }
   nav .logo{
-    font-size: 1.15rem;
-    font-weight: 900;
-    color:#fff;
-    letter-spacing: 1px;
-    pointer-events:auto;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+    display:flex;
+    align-items:center;
+    gap:8px;
   }
-  nav .logo span{ color: var(--volt); }
+  nav .logo .badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:30px; height:30px;
+    border-radius:50%;
+    background: var(--coral);
+    color:#fff;
+    font-size:1rem;
+    transform: rotate(-8deg);
+  }
+  nav .logo span{ color: var(--coral-deep); }
   nav .navlinks{
     display:flex;
+    align-items:center;
     gap: 26px;
-    pointer-events:auto;
+    line-height: 1;
   }
   nav .navlinks a{
-    color:#dfeaff;
+    display:inline-flex;
+    align-items:center;
+    color: var(--ink);
     text-decoration:none;
-    font-weight:600;
+    font-weight:700;
     font-size:0.92rem;
-    opacity:0.85;
+    line-height: 1;
+    opacity:0.8;
     transition: opacity .2s, color .2s;
+    position: relative;
+    padding-bottom: 3px;
   }
-  nav .navlinks a:hover{ opacity:1; color: var(--volt); }
+  nav .navlinks a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:100%;
+    height:2px;
+    background: var(--coral-deep);
+    border-radius:2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .25s ease;
+  }
+  nav .navlinks a:hover{ opacity:1; color: var(--coral-deep); }
+  nav .navlinks a:hover::after{ transform: scaleX(1); }
+  nav .logo .badge{ animation: swayBadge 2.4s ease-in-out infinite; }
   @media (max-width: 700px){
     nav .navlinks{ display:none; }
   }
@@ -90,74 +188,150 @@
   .hero{
     position:relative;
     min-height: 100vh;
-    background:
-      radial-gradient(ellipse at 20% 20%, rgba(47,230,255,0.15), transparent 45%),
-      radial-gradient(ellipse at 80% 70%, rgba(255,93,162,0.12), transparent 45%),
-      linear-gradient(180deg, var(--bg-dark), var(--bg-dark2));
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding: 0 6vw;
+    padding: 120px 6vw 90px;
     overflow:hidden;
   }
-  .hero .spark{
+  .hero::before{
+    content:"";
     position:absolute;
-    border-radius:50%;
-    background: var(--cyan);
-    opacity:0.55;
-    filter: blur(1px);
-    animation: twinkle 3.5s ease-in-out infinite;
-  }
-  @keyframes twinkle{
-    0%,100%{ opacity:0.15; transform: scale(0.8); }
-    50%{ opacity:0.8; transform: scale(1.2); }
+    inset: -20px;
+    background:
+      radial-gradient(circle at 14% 24%, rgba(255,111,94,0.10), transparent 40%),
+      radial-gradient(circle at 84% 18%, rgba(79,179,196,0.12), transparent 42%),
+      radial-gradient(circle at 70% 82%, rgba(242,166,61,0.12), transparent 40%);
+    background-size: 120% 120%, 120% 120%, 120% 120%;
+    pointer-events:none;
+    animation: drift 12s ease-in-out infinite;
   }
   .hero-badge{
     display:inline-block;
-    padding: 6px 16px;
-    border-radius: 999px;
-    border: 1px solid rgba(198,255,51,0.5);
-    color: var(--volt);
-    font-weight:700;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 22px;
-    background: rgba(198,255,51,0.06);
-  }
-  .hero h1{
-    font-size: clamp(2.6rem, 9vw, 6rem);
-    line-height:0.98;
+    position:relative;
+    padding: 8px 22px;
     color:#fff;
+    font-family: var(--font-hand);
+    font-weight:700;
+    font-size: 1.25rem;
+    margin-bottom: 26px;
+    background: var(--coral);
+    box-shadow: 0 6px 0 rgba(59,47,34,0.08);
+    border-radius: 6px;
+    opacity:0;
+    animation: fadeUp .7s ease .05s both, swayBadge 2.8s ease-in-out 0.9s infinite;
+  }
+  .hero-badge::before, .hero-badge::after{
+    content:"";
+    position:absolute;
+    width: 46px; height:18px;
+    background: var(--tape);
+    border: 1px solid rgba(255,255,255,0.4);
+    top: -10px;
+  }
+  .hero-badge::before{ left: -14px; transform: rotate(-38deg); }
+  .hero-badge::after{ right: -14px; transform: rotate(38deg); }
+  .hero h1{
+    font-size: clamp(2.6rem, 8.5vw, 5.3rem);
+    line-height:1.05;
+    color: var(--ink);
+    font-weight: 800;
+    opacity:0;
+    animation: fadeUp .8s ease .18s both;
   }
   .hero h1 .accent{
-    color: var(--volt);
-    text-shadow: 0 0 22px rgba(198,255,51,0.55);
+    color: var(--coral-deep);
+    position: relative;
+    white-space: nowrap;
+  }
+  .hero h1 .accent svg{
+    position:absolute;
+    left: -2%;
+    bottom: -0.18em;
+    width: 104%;
+    height: 0.3em;
+  }
+  .hero h1 .accent svg path{
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    animation: drawLine 1s ease .9s forwards;
   }
   .hero p.tagline{
-    margin-top: 22px;
-    max-width: 620px;
-    color: #b9c6de;
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    line-height:1.6;
+    margin-top: 24px;
+    max-width: 600px;
+    color: var(--ink-soft);
+    font-size: clamp(1rem, 2vw, 1.18rem);
+    line-height:1.75;
+    font-weight: 600;
+    opacity:0;
+    animation: fadeUp .8s ease .32s both;
   }
-  .hero .scroll-cue{
+  .hero-strip{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    flex-wrap: wrap;
+    margin-top: 46px;
+    opacity:0;
+    animation: fadeUp .8s ease .46s both;
+  }
+  .polaroid{
+    background:#fff;
+    padding: 10px 10px 26px;
+    box-shadow: 0 10px 22px rgba(59,47,34,0.14);
+    width: 110px;
+    text-align:center;
+    position:relative;
+  }
+  .polaroid .ph{
+    width:100%;
+    aspect-ratio: 1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 2.1rem;
+  }
+  .polaroid .cap{
+    font-family: var(--font-hand);
+    font-weight:700;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin-top:6px;
+  }
+  .polaroid{ transition: transform .25s ease, box-shadow .25s ease; }
+  .polaroid:hover{ transform: scale(1.08) rotate(0deg) !important; box-shadow: 0 16px 30px rgba(59,47,34,0.22); animation-play-state: paused; }
+  .polaroid:nth-child(1){ background: var(--paper-peach); animation: floatA 4.6s ease-in-out infinite; }
+  .polaroid:nth-child(2){ background: var(--paper-sky); margin-top: 16px; animation: floatB 5.2s ease-in-out infinite .3s; }
+  .polaroid:nth-child(3){ background: var(--paper-mint); animation: floatC 4.9s ease-in-out infinite .6s; }
+  .polaroid:nth-child(4){ background: var(--kraft); margin-top: 10px; animation: floatD 5.5s ease-in-out infinite .15s; }
+  .polaroid::before{
+    content:"";
     position:absolute;
-    bottom: 34px;
-    color:#9fb3d1;
-    font-size: 0.85rem;
-    letter-spacing:1px;
+    top:-10px; left:50%;
+    transform: translateX(-50%) rotate(-4deg);
+    width:44px; height:16px;
+    background: var(--tape);
+    border: 1px solid rgba(255,255,255,0.4);
+  }
+  .scroll-cue{
+    margin-top: 54px;
+    color: var(--ink-soft);
+    font-family: var(--font-hand);
+    font-weight:700;
+    font-size: 1.15rem;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:8px;
+    gap:6px;
+    opacity:0;
+    animation: fadeUp .8s ease .62s both;
   }
-  .hero .scroll-cue .arrow{
+  .scroll-cue .arrow{
     width:10px; height:10px;
-    border-right:2px solid var(--cyan);
-    border-bottom:2px solid var(--cyan);
+    border-right:3px solid var(--coral-deep);
+    border-bottom:3px solid var(--coral-deep);
     transform: rotate(45deg);
     animation: bob 1.6s ease-in-out infinite;
   }
@@ -166,204 +340,75 @@
     50%{ transform: translateY(8px) rotate(45deg); }
   }
 
-  /* short/landscape viewports: hero content + the absolutely-positioned scroll cue
-     were both fighting for the same vertical space and overlapping */
-  @media (max-height: 500px){
-    .hero{ padding-top: 70px; padding-bottom: 64px; }
-    .hero-badge{ margin-bottom: 12px; }
-    .hero h1{ font-size: clamp(1.5rem, 6vw, 2.6rem); }
-    .hero p.tagline{ margin-top: 12px; font-size: 0.85rem; }
-    .hero .scroll-cue{ display:none; }
-  }
-
-  /* ---------- RIDE TRACK (smooth, scroll-driven 2D animation) ---------- */
-  .ride-track{
-    position:relative;
-    height: 340vh;
-    background: linear-gradient(180deg, var(--bg-dark2), #0a1120 60%, #090d18);
-  }
-  .ride-sticky{
-    position:sticky;
-    top:0;
-    height:100vh;
-    overflow:hidden;
-  }
-  .scene{
-    position:absolute;
-    inset:0;
-    opacity:0;
-  }
-  .ride-header{
-    position:absolute;
-    top: 90px;
-    left:0; right:0;
-    text-align:center;
-    z-index:5;
-    padding: 0 6vw;
-    opacity:0;
-  }
-  .ride-header h2{
-    color:#fff;
-    font-size: clamp(1.6rem, 4vw, 2.6rem);
-  }
-  .ride-header p{
-    color:#9fb3d1;
-    margin-top:10px;
-    font-size: 0.95rem;
-  }
-
-  .progress-wrap{
-    position:absolute;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(560px, 80vw);
-    z-index:5;
-    opacity:0;
-  }
-  .progress-label{
-    display:flex;
-    justify-content:space-between;
-    color:#7f93b3;
-    font-size:0.72rem;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    margin-bottom:6px;
-  }
-  .progress-bar{
-    height:6px;
-    border-radius:999px;
-    background: rgba(255,255,255,0.08);
-    overflow:hidden;
-  }
-  .progress-fill{
-    height:100%;
-    width:0%;
-    background: linear-gradient(90deg, var(--cyan), var(--volt));
-    border-radius:999px;
-  }
-
-  /* parallax sky */
-  .parallax-layer{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    will-change: transform;
-  }
-  .blob{
-    position:absolute;
-    border-radius:50%;
-    filter: blur(3px);
-    opacity:0.4;
-  }
-
-  .hills{
-    position:absolute;
-    left:0; right:0;
-    bottom: 118px;
-    height: 200px;
-    pointer-events:none;
-    will-change: transform;
-  }
-  .hill{
-    position:absolute;
-    bottom:0;
-    width: 56vw;
-    height: 160px;
-    background: #121d34;
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  }
-
-  /* road */
-  .road{
-    position:absolute;
-    left:0; right:0; bottom:0;
-    height: 118px;
-    background: linear-gradient(180deg, #363b43, var(--road));
-    z-index:3;
-  }
-  .road::before{
-    content:"";
-    position:absolute;
-    top:0; left:0; right:0;
-    height:4px;
-    background: linear-gradient(90deg, var(--cyan), var(--volt));
-    opacity:0.6;
-  }
-  .road-line{
-    position:absolute;
-    top:50%;
-    left:0;
-    width: 300%;
-    height: 6px;
-    transform: translateY(-50%);
-    background-image: repeating-linear-gradient(90deg, var(--road-line) 0 56px, transparent 56px 112px);
-    will-change: transform;
-  }
-
-  .vehicle-lane{
-    position:absolute;
-    left:0;
+  /* ---------- TORN PAPER DIVIDER ---------- */
+  .torn{
     width:100%;
-    z-index:4;
-    will-change: transform;
-  }
-  .lane-bike{ bottom: 88px; }
-  .lane-scooter{ bottom: 14px; }
-
-  .vehicle-wrap{
-    position:absolute;
-    left:0;
-    bottom:0;
-    width: 190px;
-    will-change: transform;
-  }
-  .vehicle-wrap svg{
-    width:100%;
-    height:auto;
+    height:34px;
     display:block;
-    overflow:visible;
-    filter: drop-shadow(0 8px 8px rgba(0,0,0,0.35));
+    position:relative;
+    z-index:2;
   }
 
-  .ground-shadow{
-    position:absolute;
-    bottom: 4px;
-    left:0;
-    width: 130px;
-    height: 16px;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0.4), transparent 72%);
-    will-change: transform;
-    pointer-events:none;
+  /* ---------- BANNER STRIP ---------- */
+  .banner{
+    background: var(--kraft);
+    text-align:center;
+    padding: 54px 6vw 64px;
   }
+  .banner h2{
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--ink);
+  }
+  .banner p{
+    margin-top:12px;
+    color: var(--ink-soft);
+    font-weight:600;
+  }
+  .washi-row{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom: 18px;
+  }
+  .washi{
+    width:64px; height:16px;
+    border-radius:2px;
+  }
+  .washi{ transition: transform .3s ease; }
+  .washi:hover{ transform: scale(1.15) rotate(0deg) !important; }
+  .washi:nth-child(1){ background: repeating-linear-gradient(45deg, var(--coral), var(--coral) 6px, #ffd8d1 6px, #ffd8d1 12px); transform: rotate(-4deg); }
+  .washi:nth-child(2){ background: repeating-linear-gradient(45deg, var(--sky), var(--sky) 6px, #d4eef2 6px, #d4eef2 12px); transform: rotate(3deg); }
+  .washi:nth-child(3){ background: repeating-linear-gradient(45deg, var(--mustard), var(--mustard) 6px, #fce3b8 6px, #fce3b8 12px); transform: rotate(-2deg); }
 
-  /* ---------- SECTIONS (light) ---------- */
+  /* ---------- SECTIONS ---------- */
   section.panel{
-    padding: 110px 6vw;
+    padding: 90px 6vw 110px;
     max-width: 1180px;
     margin: 0 auto;
   }
   .eyebrow{
     display:inline-block;
-    font-size:0.78rem;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    font-weight:800;
-    color: #ff5da2;
-    margin-bottom: 14px;
+    font-family: var(--font-hand);
+    font-size:1.3rem;
+    font-weight:700;
+    color: var(--coral-deep);
+    margin-bottom: 6px;
+    transform: rotate(-2deg);
   }
   .section-title{
-    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-size: clamp(2rem, 4.5vw, 2.7rem);
+    font-weight: 700;
     color: var(--ink);
-    margin-bottom: 22px;
+    margin-bottom: 20px;
   }
   .section-lead{
-    font-size: 1.1rem;
-    line-height:1.75;
-    color:#4a5468;
-    max-width: 760px;
+    font-size: 1.06rem;
+    line-height:1.85;
+    color: var(--ink-soft);
+    max-width: 720px;
+    font-weight: 500;
   }
-
+  .about-wrap{ background: var(--paper-mint); }
   .about-grid{
     display:grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -372,306 +417,333 @@
     margin-top: 40px;
   }
   @media (max-width: 850px){ .about-grid{ grid-template-columns: 1fr; } }
-
   .about-stats{
     display:grid;
     grid-template-columns: 1fr 1fr;
-    gap: 18px;
+    gap: 24px;
   }
-  .stat-card{
+  .stat-sticker{
+    --rot: 0deg; --ty: 0px; --sc: 1;
     background: var(--card);
-    border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 10px 30px rgba(20,30,60,0.08);
-    border: 1px solid rgba(20,30,60,0.05);
+    border-radius: 50% 48% 52% 46% / 52% 46% 54% 48%;
+    padding: 28px 12px;
+    text-align:center;
+    box-shadow: 0 10px 24px rgba(59,47,34,0.10);
+    border: 2px solid rgba(59,47,34,0.06);
+    transform: translateY(var(--ty)) scale(var(--sc)) rotate(var(--rot));
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1), box-shadow .3s ease, opacity .6s ease;
   }
-  .stat-card .num{
-    font-size: 2rem;
-    font-weight:900;
-    background: linear-gradient(90deg, #1aa3b0, var(--pink));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
+  .stat-sticker:hover{ --ty:-6px !important; --sc:1.08 !important; --rot:0deg !important; box-shadow: 0 14px 28px rgba(59,47,34,0.16); }
+  .stat-sticker:nth-child(1){ --rot:-4deg; }
+  .stat-sticker:nth-child(2){ --rot:3deg; }
+  .stat-sticker:nth-child(3){ --rot:2deg; }
+  .stat-sticker:nth-child(4){ --rot:-3deg; }
+  .stat-sticker.reveal-item{ opacity:0; --ty:30px; --sc:0.9; }
+  .stat-sticker.reveal-item.is-visible{ opacity:1; --ty:0px; --sc:1; }
+  .stat-sticker .num{
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight:700;
+    color: var(--coral-deep);
   }
-  .stat-card .lbl{
-    margin-top: 6px;
-    font-size:0.85rem;
-    color:#6b7690;
-    font-weight:600;
+  .stat-sticker .lbl{
+    margin-top: 4px;
+    font-size:0.8rem;
+    color: var(--ink-soft);
+    font-weight:700;
   }
 
   /* activities */
-  .activities{
-    background: var(--bg-dark);
-  }
-  .activities .section-title, .activities .eyebrow{ color:#fff; }
-  .activities .eyebrow{ color: var(--volt); }
-  .activities .section-lead{ color:#aebbd6; }
+  .activities-wrap{ background: var(--paper-sky); }
   .cards{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 26px;
-    margin-top: 46px;
+    gap: 30px;
+    margin-top: 48px;
   }
   @media (max-width: 900px){ .cards{ grid-template-columns: 1fr; } }
   .card{
-    background: linear-gradient(160deg, #101c33, #0c1526);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 34px 28px;
-    transition: transform .25s ease, box-shadow .25s ease;
+    --rot: 0deg; --ty: 0px; --sc: 1;
+    background: var(--card);
+    border-radius: 10px;
+    padding: 36px 26px 30px;
+    box-shadow: 0 12px 26px rgba(59,47,34,0.10);
+    position: relative;
+    transform: translateY(var(--ty)) scale(var(--sc)) rotate(var(--rot));
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1), box-shadow .3s ease, opacity .6s ease;
   }
-  .card:hover{
-    transform: translateY(-8px);
-    box-shadow: 0 18px 40px rgba(47,230,255,0.12);
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-11px; left:50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width:50px; height:18px;
+    background: var(--tape);
+    border: 1px solid rgba(255,255,255,0.4);
   }
+  .cards .card:nth-child(1){ --rot:-1.6deg; }
+  .cards .card:nth-child(2){ --rot:1.4deg; }
+  .cards .card:nth-child(3){ --rot:-1deg; }
+  .card:hover{ --ty:-8px !important; --rot:0deg !important; box-shadow: 0 18px 34px rgba(59,47,34,0.16); }
+  .card.reveal-item{ opacity:0; --ty:30px; --sc:0.94; }
+  .card.reveal-item.is-visible{ opacity:1; --ty:0px; --sc:1; }
   .card .icon{
-    width:52px; height:52px;
-    border-radius: 14px;
+    width:56px; height:56px;
+    border-radius: 50%;
     display:flex; align-items:center; justify-content:center;
-    font-size:1.5rem;
-    margin-bottom: 20px;
+    font-size:1.7rem;
+    margin-bottom: 18px;
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
   }
-  .card:nth-child(1) .icon{ background: rgba(198,255,51,0.15); }
-  .card:nth-child(2) .icon{ background: rgba(47,230,255,0.15); }
-  .card:nth-child(3) .icon{ background: rgba(255,122,69,0.15); }
-  .card h3{ color:#fff; font-size:1.3rem; margin-bottom:12px; }
-  .card p{ color:#a9b7d1; line-height:1.65; font-size:0.96rem; }
+  .card:hover .icon{ transform: scale(1.15) rotate(-8deg); }
+  .card:nth-child(1) .icon{ background: #ffe1db; }
+  .card:nth-child(2) .icon{ background: #dcf1f4; }
+  .card:nth-child(3) .icon{ background: #fbe6c2; }
+  .card h3{ color: var(--ink); font-size:1.3rem; margin-bottom:10px; }
+  .card p{ color: var(--ink-soft); line-height:1.7; font-size:0.97rem; font-weight: 500; }
 
   /* members */
+  .members-wrap{ background: var(--paper-cream); }
   .members-grid{
     display:grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 22px;
-    margin-top: 46px;
+    gap: 30px;
+    margin-top: 48px;
   }
   .member-card{
-    background: var(--card);
-    border-radius: 18px;
-    padding: 22px 16px;
+    --rot: 0deg; --ty: 0px; --sc: 1;
+    background:#fff;
+    padding: 14px 14px 20px;
+    box-shadow: 0 10px 22px rgba(59,47,34,0.12);
     text-align:center;
-    box-shadow: 0 10px 26px rgba(20,30,60,0.07);
-    border: 1px solid rgba(20,30,60,0.05);
+    position:relative;
+    transform: translateY(var(--ty)) scale(var(--sc)) rotate(var(--rot));
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1), box-shadow .3s ease, opacity .6s ease;
+  }
+  .member-card:hover{ --ty:-6px !important; --rot:0deg !important; box-shadow: 0 16px 30px rgba(59,47,34,0.18); }
+  .member-card:hover .member-avatar{ transform: scale(1.06); }
+  .members-grid .member-card:nth-child(3n+1){ --rot:-3deg; }
+  .members-grid .member-card:nth-child(3n+2){ --rot:2deg; }
+  .members-grid .member-card:nth-child(3n){ --rot:-1.5deg; }
+  .member-card.reveal-item{ opacity:0; --ty:30px; --sc:0.9; }
+  .member-card.reveal-item.is-visible{ opacity:1; --ty:0px; --sc:1; }
+  .member-card::before{
+    content:"";
+    position:absolute;
+    top:-9px; left:50%;
+    transform: translateX(-50%) rotate(-5deg);
+    width:40px; height:16px;
+    background: var(--tape);
+    border: 1px solid rgba(255,255,255,0.4);
   }
   .member-avatar{
-    width: 64px; height:64px;
-    border-radius:50%;
-    margin: 0 auto 14px;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius:2px;
+    margin: 0 auto 12px;
     display:flex; align-items:center; justify-content:center;
-    background: linear-gradient(140deg, var(--cyan), var(--volt));
-    color:#0b1220;
-    font-weight:900;
-    font-size:1.3rem;
+    background: linear-gradient(140deg, #ffe1db, #d4eef2);
+    color: var(--coral-deep);
+    font-family: var(--font-display);
+    font-weight:700;
+    font-size:1.6rem;
+    transition: transform .3s ease;
   }
-  .member-name{ font-weight:700; color:#2a3350; font-size:0.95rem; }
-  .member-role{ font-size:0.78rem; color:#8b95ad; margin-top:4px; }
+  .member-name{ font-family: var(--font-hand); font-weight:700; color: var(--ink); font-size:1.15rem; }
+  .member-role{ font-size:0.78rem; color: var(--ink-soft); margin-top:2px; font-weight: 600; }
 
-  /* events / footer */
-  .events{
-    background: linear-gradient(180deg, var(--bg-dark2), var(--bg-dark));
-  }
-  .events .section-title, .events .eyebrow{ color:#fff; }
-  .events .eyebrow{ color: var(--volt); }
-  .events .section-lead{ color:#b9c6de; }
-
+  /* events */
+  .events-wrap{ background: var(--paper-peach); }
   .events-grid{
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
-    margin-top: 46px;
+    gap: 26px;
+    margin-top: 48px;
   }
   .event-card{
-    background: linear-gradient(160deg, #101c33, #0c1526);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 24px;
+    --rot: 0deg; --ty: 0px; --sc: 1;
+    background: var(--card);
+    border-radius: 8px;
+    padding: 26px;
     display:flex;
     gap: 18px;
     align-items:flex-start;
-    transition: transform .25s ease, box-shadow .25s ease;
+    position:relative;
+    box-shadow: 0 12px 26px rgba(59,47,34,0.10);
+    border: 2px dashed rgba(59,47,34,0.16);
+    transform: translateY(var(--ty)) scale(var(--sc)) rotate(var(--rot));
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1), box-shadow .3s ease, opacity .6s ease;
   }
-  .event-card:hover{
-    transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(47,230,255,0.12);
+  .events-grid .event-card:nth-child(odd){ --rot:-1deg; }
+  .events-grid .event-card:nth-child(even){ --rot:1deg; }
+  .event-card:hover{ --ty:-6px !important; --rot:0deg !important; box-shadow: 0 16px 32px rgba(59,47,34,0.15); }
+  .event-card:hover .event-date{ transform: rotate(0deg) scale(1.08); }
+  .event-card.reveal-item{ opacity:0; --ty:30px; --sc:0.94; }
+  .event-card.reveal-item.is-visible{ opacity:1; --ty:0px; --sc:1; }
+  .event-card::before{
+    content:"";
+    position:absolute;
+    top:-10px; left: 22px;
+    transform: rotate(-6deg);
+    width:46px; height:16px;
+    background: var(--tape);
+    border: 1px solid rgba(255,255,255,0.4);
   }
   .event-date{
     flex-shrink:0;
-    width: 62px;
-    height: 62px;
-    border-radius: 14px;
-    background: linear-gradient(140deg, var(--volt), var(--cyan));
-    color: #0b1220;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--coral);
+    color: #fff;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    transform: rotate(-6deg);
+    box-shadow: 0 4px 0 rgba(59,47,34,0.10);
+    transition: transform .3s cubic-bezier(.34,1.4,.64,1);
   }
-  .event-date .day{ font-size:1.3rem; font-weight:900; line-height:1; }
-  .event-date .mon{ font-size:0.65rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; }
-  .event-info h3{ color:#fff; font-size:1.1rem; margin-bottom:6px; }
-  .event-info .meta{ color: var(--volt); font-size:0.78rem; font-weight:700; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; }
-  .event-info p{ color:#a9b7d1; line-height:1.6; font-size:0.92rem; }
+  .event-date .day{ font-family: var(--font-display); font-size:1.25rem; font-weight:700; line-height:1; }
+  .event-date .mon{ font-size:0.62rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+  .event-info h3{ color: var(--ink); font-size:1.15rem; margin-bottom:6px; }
+  .event-info .meta{ color: var(--sky); font-size:0.78rem; font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; }
+  .event-info p{ color: var(--ink-soft); line-height:1.65; font-size:0.94rem; font-weight: 500; }
   .event-link-btn{
     display:inline-block;
-    margin-top: 14px;
-    padding: 8px 18px;
+    margin-top: 16px;
+    padding: 9px 20px;
     border-radius: 999px;
-    background: linear-gradient(90deg, var(--cyan), var(--volt));
-    color: #0b1220;
-    font-weight:800;
-    font-size:0.8rem;
+    background: var(--coral-deep);
+    color: #fff;
+    font-weight:700;
+    font-size:0.82rem;
     text-decoration:none;
-    letter-spacing:0.3px;
+    letter-spacing:0.2px;
     transition: transform .2s ease;
   }
-  .event-link-btn:hover{ transform: translateY(-2px); }
+  .event-link-btn:hover{ transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 16px rgba(228,84,63,0.3); }
   .events-empty{
     text-align:center;
-    color:#a9b7d1;
-    padding: 40px 20px;
-    border: 1px dashed rgba(255,255,255,0.15);
-    border-radius: 20px;
-    margin-top: 46px;
+    color: var(--ink-soft);
+    font-weight:600;
+    padding: 44px 20px;
+    border: 2px dashed rgba(59,47,34,0.22);
+    border-radius: 12px;
+    margin-top: 48px;
+    background: #fff;
   }
   .events-contact{
     text-align:center;
-    margin-top: 40px;
-    color:#8b98b3;
-    font-size:0.92rem;
+    margin-top: 44px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size:0.94rem;
   }
-  .events-contact a{ color: var(--volt); font-weight:700; text-decoration:none; }
+  .events-contact a{ color: var(--coral-deep); font-weight:800; text-decoration:none; }
   .events-contact a:hover{ text-decoration:underline; }
 
   footer{
-    background: var(--bg-dark);
-    color:#7f8db0;
+    background: var(--cork);
+    color:#d8c9b4;
     text-align:center;
-    padding: 34px 6vw 44px;
+    padding: 40px 6vw 46px;
     font-size:0.85rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
   }
-  footer .footer-logo{ color:#fff; font-weight:800; margin-bottom:8px; }
-  footer .footer-logo span{ color: var(--volt); }
+  footer .footer-logo{ font-family: var(--font-display); color:#fff; font-weight:700; margin-bottom:8px; }
+  footer .footer-logo span{ color: var(--coral); }
+  footer .footer-social{
+    margin: 4px 0 18px;
+  }
+  footer .yt-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:#d8c9b4;
+    text-decoration:none;
+    font-weight:700;
+    font-size:0.9rem;
+    padding: 8px 16px;
+    border-radius:999px;
+    border: 1px solid rgba(255,255,255,0.14);
+    transition: transform .2s ease, color .2s ease, border-color .2s ease;
+  }
+  footer .yt-link:hover{ transform: translateY(-2px); color:#fff; border-color: rgba(255,255,255,0.3); }
+  footer .yt-link svg{ width:18px; height:18px; flex-shrink:0; }
+
+  .nav-yt{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background: #ff3b30;
+    color:#fff !important;
+    padding: 8px 16px;
+    border-radius:999px;
+    font-weight:800 !important;
+    font-size:0.86rem !important;
+    line-height: 1 !important;
+    opacity:1 !important;
+    padding-bottom: 8px !important;
+    transition: transform .2s ease, box-shadow .2s ease !important;
+  }
+  .nav-yt::after{ display:none; }
+  .nav-yt svg{ width:15px; height:15px; flex-shrink:0; }
+  .nav-yt:hover{ transform: translateY(-2px) scale(1.04); box-shadow: 0 6px 14px rgba(255,59,48,0.35); color:#fff; }
 </style>
 </head>
 <body>
-
 <nav>
-  <div class="logo">SUTTON <span>DUDES</span></div>
+  <div class="logo"><span class="badge">☀</span>SUTTON <span>DUDES</span></div>
   <div class="navlinks">
     <a href="#about">About</a>
     <a href="#activities">What We Do</a>
     <a href="#members">The Dudes</a>
     <a href="#events">Events</a>
+    <a class="nav-yt" href="https://www.youtube.com/@SuttonDudes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12Z"/></svg>
+      YouTube
+    </a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-badge">Kid-Powered &middot; Community-Driven</div>
-  <h1 class="glow-text">THE SUTTON<br><span class="accent">DUDES</span></h1>
+  <h1>THE SUTTON<br>
+    <span class="accent">DUDES
+      <svg viewBox="0 0 200 20" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2,12 Q20,2 40,12 T80,12 T120,12 T160,12 T198,12" fill="none" stroke="#f2a63d" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+    </span>
+  </h1>
   <p class="tagline">
     A crew of kids who love throwing events, building stands, and showing up for our
     community &mdash; rolling in on electric bikes and scooters, however we can get there.
   </p>
+  <div class="hero-strip">
+    <div class="polaroid"><div class="ph">🚴</div><div class="cap">ride</div></div>
+    <div class="polaroid"><div class="ph">🛴</div><div class="cap">roll</div></div>
+    <div class="polaroid"><div class="ph">🍋</div><div class="cap">sell</div></div>
+    <div class="polaroid"><div class="ph">🎉</div><div class="cap">party</div></div>
+  </div>
   <div class="scroll-cue">
-    Scroll to ride with us
+    see what we're up to
     <div class="arrow"></div>
   </div>
 </section>
 
-<!-- RIDE TRACK: smooth, scroll-driven 2D ride (no 3D, no riders) -->
-<section class="ride-track" id="ride">
-  <div class="ride-sticky">
-
-    <div class="scene" id="scene">
-      <div class="parallax-layer" id="parallaxLayer">
-        <div class="blob" style="width:120px;height:120px;top:12%;left:10%;background:rgba(47,230,255,0.22);"></div>
-        <div class="blob" style="width:80px;height:80px;top:22%;left:70%;background:rgba(255,93,162,0.18);"></div>
-        <div class="blob" style="width:160px;height:160px;top:8%;left:45%;background:rgba(198,255,51,0.1);"></div>
-      </div>
-
-      <div class="hills" id="hillsLayer">
-        <div class="hill" style="left:-10%;"></div>
-        <div class="hill" style="left:35%; height:130px; opacity:0.8;"></div>
-        <div class="hill" style="left:75%; height:190px; opacity:0.6;"></div>
-      </div>
-
-      <div class="vehicle-lane lane-bike">
-        <div class="ground-shadow" id="bikeShadow"></div>
-        <div class="vehicle-wrap" id="bikeWrap">
-          <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-            <g id="bikeBody">
-              <polyline points="26,84 70,40 96,84" fill="none" stroke="#c6ff33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="70,40 128,40 154,84" fill="none" stroke="#c6ff33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="96" y1="84" x2="154" y2="84" stroke="#c6ff33" stroke-width="7" stroke-linecap="round"/>
-              <line x1="70" y1="40" x2="60" y2="26" stroke="#c6ff33" stroke-width="7" stroke-linecap="round"/>
-              <rect x="49" y="21" width="23" height="7" rx="3.5" fill="#2fe6ff"/>
-              <line x1="128" y1="40" x2="136" y2="20" stroke="#c6ff33" stroke-width="7" stroke-linecap="round"/>
-              <line x1="121" y1="18" x2="149" y2="16" stroke="#ff5da2" stroke-width="6" stroke-linecap="round"/>
-              <path d="M96 56 l-7 12 h5 l-7 12 15 -15 h-5 z" fill="#ffd166"/>
-            </g>
-            <g id="bikeWheelBack">
-              <circle cx="26" cy="84" r="16" fill="#1c2029"/>
-              <circle cx="26" cy="84" r="7" fill="#eef3fb"/>
-              <line x1="26" y1="73" x2="26" y2="95" stroke="#b7c4d9" stroke-width="2"/>
-              <line x1="15" y1="84" x2="37" y2="84" stroke="#b7c4d9" stroke-width="2"/>
-            </g>
-            <g id="bikeWheelFront">
-              <circle cx="154" cy="84" r="16" fill="#1c2029"/>
-              <circle cx="154" cy="84" r="7" fill="#eef3fb"/>
-              <line x1="154" y1="73" x2="154" y2="95" stroke="#b7c4d9" stroke-width="2"/>
-              <line x1="143" y1="84" x2="165" y2="84" stroke="#b7c4d9" stroke-width="2"/>
-            </g>
-          </svg>
-        </div>
-      </div>
-
-      <div class="vehicle-lane lane-scooter">
-        <div class="ground-shadow" id="scooterShadow" style="width:105px;"></div>
-        <div class="vehicle-wrap" id="scooterWrap" style="width:145px;">
-          <svg viewBox="0 0 170 100" xmlns="http://www.w3.org/2000/svg">
-            <g id="scooterBody">
-              <rect x="16" y="74" width="112" height="8" rx="4" fill="#2fe6ff"/>
-              <line x1="108" y1="76" x2="108" y2="24" stroke="#2fe6ff" stroke-width="6" stroke-linecap="round"/>
-              <line x1="96" y1="22" x2="120" y2="22" stroke="#ff5da2" stroke-width="6" stroke-linecap="round"/>
-              <path d="M60 60 l-6 11 h4 l-6 11 13 -13 h-4 z" fill="#ffd166"/>
-            </g>
-            <g id="scooterWheelBack">
-              <circle cx="22" cy="84" r="12" fill="#1c2029"/>
-              <circle cx="22" cy="84" r="5" fill="#eef3fb"/>
-              <line x1="22" y1="75" x2="22" y2="93" stroke="#b7c4d9" stroke-width="1.6"/>
-              <line x1="13" y1="84" x2="31" y2="84" stroke="#b7c4d9" stroke-width="1.6"/>
-            </g>
-            <g id="scooterWheelFront">
-              <circle cx="128" cy="84" r="12" fill="#1c2029"/>
-              <circle cx="128" cy="84" r="5" fill="#eef3fb"/>
-              <line x1="128" y1="75" x2="128" y2="93" stroke="#b7c4d9" stroke-width="1.6"/>
-              <line x1="119" y1="84" x2="137" y2="84" stroke="#b7c4d9" stroke-width="1.6"/>
-            </g>
-          </svg>
-        </div>
-      </div>
-
-      <div class="road">
-        <div class="road-line" id="roadLine"></div>
-      </div>
-    </div>
-
-    <div class="progress-wrap">
-      <div class="progress-label"><span>Sutton Rd.</span><span id="progressPct">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    </div>
-
-    <div class="ride-header">
-      <h2 class="glow-text">However We Roll, We Show Up</h2>
-      <p>Keep scrolling &mdash; electric bike in the front lane, scooter right behind.</p>
-    </div>
-  </div>
+<!-- BANNER -->
+<svg class="torn" viewBox="0 0 1200 34" preserveAspectRatio="none"><path d="M0,34 L30,6 L60,34 L90,6 L120,34 L150,6 L180,34 L210,6 L240,34 L270,6 L300,34 L330,6 L360,34 L390,6 L420,34 L450,6 L480,34 L510,6 L540,34 L570,6 L600,34 L630,6 L660,34 L690,6 L720,34 L750,6 L780,34 L810,6 L840,34 L870,6 L900,34 L930,6 L960,34 L990,6 L1020,34 L1050,6 L1080,34 L1110,6 L1140,34 L1170,6 L1200,34 L1200,0 L0,0 Z" fill="#f4ead4"/></svg>
+<section class="banner reveal">
+  <div class="washi-row"><span class="washi"></span><span class="washi"></span><span class="washi"></span></div>
+  <h2>However We Roll, We Show Up</h2>
+  <p>From bikes to lemonade stands &mdash; if Sutton Fields needs a hand, we're already on our way.</p>
 </section>
+<svg class="torn" viewBox="0 0 1200 34" preserveAspectRatio="none"><path d="M0,0 L30,28 L60,0 L90,28 L120,0 L150,28 L180,0 L210,28 L240,0 L270,28 L300,0 L330,28 L360,0 L390,28 L420,0 L450,28 L480,0 L510,28 L540,0 L570,28 L600,0 L630,28 L660,0 L690,28 L720,0 L750,28 L780,0 L810,28 L840,0 L870,28 L900,0 L930,28 L960,0 L990,28 L1020,0 L1050,28 L1080,0 L1110,28 L1140,0 L1170,28 L1200,0 L1200,34 L0,34 Z" fill="#edf3e2"/></svg>
 
 <!-- ABOUT -->
-<section class="panel" id="about">
+<div class="about-wrap">
+<section class="panel reveal" id="about">
   <span class="eyebrow">Who We Are</span>
   <h2 class="section-title">Kids Who Show Up</h2>
   <div class="about-grid">
@@ -684,62 +756,82 @@
       crew with a simple rule: show up, pitch in, and have fun doing it.
     </p>
     <div class="about-stats">
-      <div class="stat-card"><div class="num">100%</div><div class="lbl">Kid-Run</div></div>
-      <div class="stat-card"><div class="num">2</div><div class="lbl">Wheels (or more!)</div></div>
-      <div class="stat-card"><div class="num">∞</div><div class="lbl">Community Spirit</div></div>
-      <div class="stat-card"><div class="num">1</div><div class="lbl">Sutton Neighborhood</div></div>
+      <div class="stat-sticker reveal-item"><div class="num">100%</div><div class="lbl">Kid-Run</div></div>
+      <div class="stat-sticker reveal-item"><div class="num">2</div><div class="lbl">Wheels (or more!)</div></div>
+      <div class="stat-sticker reveal-item"><div class="num">∞</div><div class="lbl">Community Spirit</div></div>
+      <div class="stat-sticker reveal-item"><div class="num">1</div><div class="lbl">Sutton Fields Neighborhood</div></div>
     </div>
   </div>
 </section>
+</div>
 
 <!-- ACTIVITIES -->
-<section class="panel activities" id="activities">
+<div class="activities-wrap">
+<section class="panel reveal" id="activities">
   <span class="eyebrow">What We Do</span>
   <h2 class="section-title">Events, Stands &amp; Helping Out</h2>
-  <p class="section-lead">Three things we love doing most &mdash; all in the name of Sutton.</p>
+  <p class="section-lead">Three things we love doing most &mdash; all in the name of Sutton Fields.</p>
   <div class="cards">
-    <div class="card">
+    <div class="card reveal-item">
       <div class="icon">🎉</div>
       <h3>Events</h3>
-      <p>We plan and run local events that bring neighbors together &mdash; from fun days to fundraisers, we love giving Sutton a reason to gather.</p>
+      <p>We plan and run local events that bring neighbors together &mdash; from fun days to fundraisers, we love giving Sutton Fields a reason to gather.</p>
     </div>
-    <div class="card">
+    <div class="card reveal-item">
       <div class="icon">🛒</div>
       <h3>Stands</h3>
       <p>From lemonade stands to community pop-ups, we set up shop for a good cause &mdash; because a good idea deserves a good table.</p>
     </div>
-    <div class="card">
+    <div class="card reveal-item">
       <div class="icon">🤝</div>
       <h3>Community Help</h3>
-      <p>Cleaning up, helping neighbors, running errands &mdash; we show up whenever Sutton needs an extra hand, electric or otherwise.</p>
+      <p>Cleaning up, helping neighbors, running errands &mdash; we show up whenever Sutton Fields needs an extra hand, electric or otherwise.</p>
     </div>
   </div>
 </section>
+</div>
 
 <!-- MEMBERS -->
-<section class="panel" id="members">
+<div class="members-wrap">
+<section class="panel reveal" id="members">
   <span class="eyebrow">The Crew</span>
   <h2 class="section-title">Meet the Dudes</h2>
   <p class="section-lead">Names coming soon &mdash; this is where every Sutton Dude gets their spot.</p>
   <div class="members-grid" id="membersGrid"></div>
 </section>
+</div>
 
 <!-- CURRENT EVENTS -->
-<section class="panel events" id="events">
+<svg class="torn" viewBox="0 0 1200 34" preserveAspectRatio="none"><path d="M0,34 L30,6 L60,34 L90,6 L120,34 L150,6 L180,34 L210,6 L240,34 L270,6 L300,34 L330,6 L360,34 L390,6 L420,34 L450,6 L480,34 L510,6 L540,34 L570,6 L600,34 L630,6 L660,34 L690,6 L720,34 L750,6 L780,34 L810,6 L840,34 L870,6 L900,34 L930,6 L960,34 L990,6 L1020,34 L1050,6 L1080,34 L1110,6 L1140,34 L1170,6 L1200,34 L1200,0 L0,0 Z" fill="#fdeadb"/></svg>
+<div class="events-wrap">
+<section class="panel reveal" id="events">
   <span class="eyebrow">What's Happening</span>
   <h2 class="section-title">Current Events</h2>
   <p class="section-lead">Here's what the Sutton Dudes have coming up &mdash; check back often.</p>
   <div class="events-grid" id="eventsGrid"></div>
   <p class="events-contact">Have an event you'd love us at? <a href="mailto:hello@suttondudes.example">Get in touch</a>.</p>
 </section>
+</div>
 
 <footer>
   <div class="footer-logo">SUTTON <span>DUDES</span></div>
+  <div class="footer-social">
+    <a class="yt-link" href="https://www.youtube.com/@SuttonDudes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12Z"/></svg>
+      Watch us on YouTube
+    </a>
+  </div>
   &copy; <span id="year"></span> The Sutton Dudes &mdash; kids doing good, one event at a time.
 </footer>
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // subtle nav shadow once the page has scrolled a bit
+  const navEl = document.querySelector('nav');
+  const onScroll = () => navEl.classList.toggle('scrolled', window.scrollY > 20);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
   // ---- MEMBERS PLACEHOLDER ----
   // TODO: replace this array with real member names when you have them.
@@ -753,9 +845,10 @@
     { name: "?", role: "Coming Soon" },
   ];
   const grid = document.getElementById('membersGrid');
-  members.forEach(m => {
+  members.forEach((m, i) => {
     const card = document.createElement('div');
-    card.className = 'member-card';
+    card.className = 'member-card reveal-item';
+    card.style.transitionDelay = `${(i % 6) * 0.07}s`;
     card.innerHTML = `
       <div class="member-avatar">${m.name === "?" ? "★" : m.name.charAt(0)}</div>
       <div class="member-name">${m.name === "?" ? "Name Coming Soon" : m.name}</div>
@@ -774,22 +867,20 @@
   const events = [
     { date: "2026-08-09", title: "Chaat Corner", location: "4508 Ferrers Drive", description: "Indian authentic food stand with a variety of foods before school starts.", link: "https://web-production-fb4cb.up.railway.app/", linkText: "Learn More" },
   ];
-
   const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
   const eventsGrid = document.getElementById('eventsGrid');
   const today = new Date(); today.setHours(0,0,0,0);
-
   const upcoming = events
     .filter(e => new Date(e.date + "T00:00:00") >= today)
     .sort((a,b) => new Date(a.date) - new Date(b.date));
-
   if (upcoming.length === 0){
     eventsGrid.outerHTML = `<div class="events-empty" id="eventsGrid">No upcoming events right now — check back soon!</div>`;
   } else {
-    upcoming.forEach(e => {
+    upcoming.forEach((e, i) => {
       const d = new Date(e.date + "T00:00:00");
       const card = document.createElement('div');
-      card.className = 'event-card';
+      card.className = 'event-card reveal-item';
+      card.style.transitionDelay = `${(i % 6) * 0.08}s`;
       card.innerHTML = `
         <div class="event-date">
           <div class="day">${d.getDate()}</div>
@@ -806,90 +897,28 @@
     });
   }
 
-  // ---- SMOOTH SCROLL-DRIVEN RIDE (plain 2D, no 3D, no riders) ----
-  (function initRide(){
-    const track = document.getElementById('ride');
-    const scene = document.getElementById('scene');
-    const rideHeader = document.querySelector('.ride-header');
-    const progressWrap = document.querySelector('.progress-wrap');
-    const progressFill = document.getElementById('progressFill');
-    const progressPct = document.getElementById('progressPct');
-    const bikeWrap = document.getElementById('bikeWrap');
-    const scooterWrap = document.getElementById('scooterWrap');
-    const bikeShadow = document.getElementById('bikeShadow');
-    const scooterShadow = document.getElementById('scooterShadow');
-    const bikeWheelBack = document.getElementById('bikeWheelBack');
-    const bikeWheelFront = document.getElementById('bikeWheelFront');
-    const scooterWheelBack = document.getElementById('scooterWheelBack');
-    const scooterWheelFront = document.getElementById('scooterWheelFront');
-    const roadLine = document.getElementById('roadLine');
-    const parallaxLayer = document.getElementById('parallaxLayer');
-    const hillsLayer = document.getElementById('hillsLayer');
-    if (!track) return;
+  // ---- LIGHTWEIGHT SCROLL REVEAL (replaces the old scroll-linked ride animation) ----
+  const revealEls = document.querySelectorAll('.reveal, .reveal-item');
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  }
 
-    function getTargetProgress(){
-      const rect = track.getBoundingClientRect();
-      const total = track.offsetHeight - window.innerHeight;
-      if (total <= 0) return 0;
-      return Math.min(1, Math.max(0, -rect.top / total));
-    }
-
-    let currentP = 0;
-
-    function loop(){
-      // ease toward the scroll target every frame instead of snapping to it directly —
-      // this is what makes fast or choppy scrolling feel like a smooth glide
-      const target = getTargetProgress();
-      currentP += (target - currentP) * 0.08;
-      if (Math.abs(target - currentP) < 0.0003) currentP = target;
-      const p = currentP;
-
-      const vw = Math.min(window.innerWidth, 1400);
-      const bikeMax = vw + 230;
-      const scooterMax = vw + 190;
-
-      const bikeX = -190 + p * bikeMax;
-      const scooterX = -160 + Math.max(0, p - 0.03) * scooterMax * 1.02 - 30;
-      const bikeBounce = Math.sin(p * 44) * 2.6;
-      const scooterBounce = Math.sin(p * 44 + 1) * 2.6;
-
-      bikeWrap.style.transform = `translate(${bikeX}px, ${bikeBounce}px)`;
-      scooterWrap.style.transform = `translate(${scooterX}px, ${scooterBounce}px)`;
-
-      const bikeShadowScale = 1 - Math.abs(bikeBounce) / 22;
-      const scooterShadowScale = 1 - Math.abs(scooterBounce) / 22;
-      bikeShadow.style.transform = `translateX(${bikeX + 30}px) scale(${bikeShadowScale})`;
-      scooterShadow.style.transform = `translateX(${scooterX + 45}px) scale(${scooterShadowScale})`;
-
-      // wheel spin — angle proportional to horizontal distance traveled
-      const bikeAngle = (bikeX / 16) * 12;
-      const scooterAngle = (scooterX / 12) * 12;
-      bikeWheelBack.setAttribute('transform', `rotate(${bikeAngle} 26 84)`);
-      bikeWheelFront.setAttribute('transform', `rotate(${bikeAngle} 154 84)`);
-      scooterWheelBack.setAttribute('transform', `rotate(${scooterAngle} 22 84)`);
-      scooterWheelFront.setAttribute('transform', `rotate(${scooterAngle} 128 84)`);
-
-      // road dashes scroll opposite direction for a sense of speed
-      roadLine.style.transform = `translateY(-50%) translateX(${-p * 800}px)`;
-      parallaxLayer.style.transform = `translateX(${-p * 70}px)`;
-      hillsLayer.style.transform = `translateX(${-p * 130}px)`;
-
-      progressFill.style.width = `${(p * 100).toFixed(0)}%`;
-      progressPct.textContent = `${Math.round(p * 100)}%`;
-
-      // gently fade + rise the scene and header in as the section is first entered
-      const intro = Math.min(1, p / 0.06);
-      scene.style.opacity = intro;
-      rideHeader.style.opacity = intro;
-      rideHeader.style.transform = `translateY(${(1 - intro) * 14}px)`;
-      progressWrap.style.opacity = intro;
-
-      requestAnimationFrame(loop);
-    }
-
-    requestAnimationFrame(loop);
-  })();
+  // add a gentle stagger to statically-placed reveal-item groups (activity cards, stat stickers)
+  document.querySelectorAll('.cards, .about-stats').forEach(group => {
+    Array.from(group.children).forEach((child, i) => {
+      child.style.transitionDelay = `${i * 0.1}s`;
+    });
+  });
 </script>
-
 </body>
 </html>
