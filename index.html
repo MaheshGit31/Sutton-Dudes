@@ -180,9 +180,6 @@
   nav .navlinks a:hover{ opacity:1; color: var(--coral-deep); }
   nav .navlinks a:hover::after{ transform: scaleX(1); }
   nav .logo .badge{ animation: swayBadge 2.4s ease-in-out infinite; }
-  @media (max-width: 700px){
-    nav .navlinks{ display:none; }
-  }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -242,9 +239,26 @@
     animation: fadeUp .8s ease .18s both;
   }
   .hero h1 .accent{
+    background: linear-gradient(100deg, var(--coral-deep) 20%, var(--coral) 55%, var(--mustard) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     color: var(--coral-deep);
     position: relative;
     white-space: nowrap;
+  }
+  .confetti{
+    position:absolute;
+    border-radius:50%;
+    opacity:0.55;
+    pointer-events:none;
+    animation: confettiFloat 6s ease-in-out infinite;
+  }
+  .confetti:nth-child(2n){ animation-duration: 7.5s; animation-delay: .6s; }
+  .confetti:nth-child(3n){ animation-duration: 5.2s; animation-delay: 1.2s; }
+  @keyframes confettiFloat{
+    0%,100%{ transform: translate(0,0); }
+    50%{ transform: translate(6px,-14px); }
   }
   .hero h1 .accent svg{
     position:absolute;
@@ -395,11 +409,23 @@
     margin-bottom: 6px;
     transform: rotate(-2deg);
   }
+  .eyebrow{ display:block; }
   .section-title{
     font-size: clamp(2rem, 4.5vw, 2.7rem);
     font-weight: 700;
     color: var(--ink);
     margin-bottom: 20px;
+    position: relative;
+    display: block;
+  }
+  .section-title::after{
+    content:"";
+    display:block;
+    width: 84px;
+    height: 10px;
+    margin-top: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 10'%3E%3Cpath d='M2 6 Q12 -1 21 6 T40 6 T59 6 T82 6' fill='none' stroke='%23ff6f5e' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
   }
   .section-lead{
     font-size: 1.06rem;
@@ -440,6 +466,7 @@
   .stat-sticker:nth-child(4){ --rot:-3deg; }
   .stat-sticker.reveal-item{ opacity:0; --ty:30px; --sc:0.9; }
   .stat-sticker.reveal-item.is-visible{ opacity:1; --ty:0px; --sc:1; }
+  .stat-sticker .stat-emoji{ font-size:1.3rem; margin-bottom:4px; }
   .stat-sticker .num{
     font-family: var(--font-display);
     font-size: 1.9rem;
@@ -689,6 +716,55 @@
   .nav-yt::after{ display:none; }
   .nav-yt svg{ width:15px; height:15px; flex-shrink:0; }
   .nav-yt:hover{ transform: translateY(-2px) scale(1.04); box-shadow: 0 6px 14px rgba(255,59,48,0.35); color:#fff; }
+
+  /* ---------- MOBILE NAV TOGGLE ---------- */
+  .nav-toggle{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    width:38px; height:38px;
+    background: transparent;
+    border: none;
+    cursor:pointer;
+    padding: 8px;
+  }
+  .nav-toggle span{
+    display:block;
+    width:100%; height:3px;
+    border-radius:3px;
+    background: var(--ink);
+    transition: transform .3s ease, opacity .3s ease;
+  }
+  nav.open .nav-toggle span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
+  nav.open .nav-toggle span:nth-child(2){ opacity:0; }
+  nav.open .nav-toggle span:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
+  @media (max-width: 700px){
+    .nav-toggle{ display:flex; }
+    nav .navlinks{
+      display:flex;
+      position:fixed;
+      top: 66px; left:0; right:0;
+      flex-direction:column;
+      align-items:flex-start;
+      gap: 4px;
+      background: var(--paper-cream);
+      border-bottom: 2px dashed rgba(59,47,34,0.18);
+      padding: 10px 6vw 18px;
+      max-height:0;
+      overflow:hidden;
+      opacity:0;
+      transition: max-height .35s ease, opacity .3s ease, padding .35s ease;
+    }
+    nav.open .navlinks{
+      max-height: 340px;
+      opacity:1;
+      padding: 14px 6vw 22px;
+    }
+    nav .navlinks a{ padding: 10px 0; width:100%; }
+    nav .navlinks a::after{ display:none; }
+    .nav-yt{ margin-top: 4px; }
+  }
 </style>
 </head>
 <body>
@@ -704,10 +780,19 @@
       YouTube
     </a>
   </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
+  <span class="confetti" style="width:14px;height:14px;top:16%;left:9%;background:var(--coral);"></span>
+  <span class="confetti" style="width:10px;height:10px;top:28%;left:85%;background:var(--sky);"></span>
+  <span class="confetti" style="width:18px;height:18px;top:65%;left:6%;background:var(--mustard);"></span>
+  <span class="confetti" style="width:12px;height:12px;top:74%;left:90%;background:var(--sage);"></span>
+  <span class="confetti" style="width:9px;height:9px;top:12%;left:60%;background:var(--plum);"></span>
+  <span class="confetti" style="width:15px;height:15px;top:82%;left:48%;background:var(--coral-deep);"></span>
   <div class="hero-badge">Kid-Powered &middot; Community-Driven</div>
   <h1>THE SUTTON<br>
     <span class="accent">DUDES
@@ -756,10 +841,10 @@
       crew with a simple rule: show up, pitch in, and have fun doing it.
     </p>
     <div class="about-stats">
-      <div class="stat-sticker reveal-item"><div class="num">100%</div><div class="lbl">Kid-Run</div></div>
-      <div class="stat-sticker reveal-item"><div class="num">2</div><div class="lbl">Wheels (or more!)</div></div>
-      <div class="stat-sticker reveal-item"><div class="num">∞</div><div class="lbl">Community Spirit</div></div>
-      <div class="stat-sticker reveal-item"><div class="num">1</div><div class="lbl">Sutton Fields Neighborhood</div></div>
+      <div class="stat-sticker reveal-item"><div class="stat-emoji">🧒</div><div class="num">100%</div><div class="lbl">Kid-Run</div></div>
+      <div class="stat-sticker reveal-item"><div class="stat-emoji">🛞</div><div class="num">2</div><div class="lbl">Wheels (or more!)</div></div>
+      <div class="stat-sticker reveal-item"><div class="stat-emoji">💛</div><div class="num">∞</div><div class="lbl">Community Spirit</div></div>
+      <div class="stat-sticker reveal-item"><div class="stat-emoji">📍</div><div class="num">1</div><div class="lbl">Sutton Fields Neighborhood</div></div>
     </div>
   </div>
 </section>
@@ -812,6 +897,7 @@
   <p class="events-contact">Have an event you'd love us at? <a href="mailto:hello@suttondudes.example">Get in touch</a>.</p>
 </section>
 </div>
+<svg class="torn" viewBox="0 0 1200 34" preserveAspectRatio="none"><path d="M0,34 L30,6 L60,34 L90,6 L120,34 L150,6 L180,34 L210,6 L240,34 L270,6 L300,34 L330,6 L360,34 L390,6 L420,34 L450,6 L480,34 L510,6 L540,34 L570,6 L600,34 L630,6 L660,34 L690,6 L720,34 L750,6 L780,34 L810,6 L840,34 L870,6 L900,34 L930,6 L960,34 L990,6 L1020,34 L1050,6 L1080,34 L1110,6 L1140,34 L1170,6 L1200,34 L1200,0 L0,0 Z" fill="#3a2c22"/></svg>
 
 <footer>
   <div class="footer-logo">SUTTON <span>DUDES</span></div>
@@ -832,6 +918,19 @@
   const onScroll = () => navEl.classList.toggle('scrolled', window.scrollY > 20);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  // mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navEl.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  document.querySelectorAll('.navlinks a').forEach(a => {
+    a.addEventListener('click', () => {
+      navEl.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
 
   // ---- MEMBERS PLACEHOLDER ----
   // TODO: replace this array with real member names when you have them.
@@ -866,6 +965,7 @@
   // Events are sorted soonest-first and automatically drop off the list once their date has passed.
   const events = [
     { date: "2026-08-09", title: "Chaat Corner", location: "4508 Ferrers Drive", description: "Indian authentic food stand with a variety of foods before school starts.", link: "https://web-production-fb4cb.up.railway.app/", linkText: "Learn More" },
+    { date: "2026-09-14", title: "Ganesh Chaturthi", description: "More information coming soon!" },
   ];
   const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
   const eventsGrid = document.getElementById('eventsGrid');
